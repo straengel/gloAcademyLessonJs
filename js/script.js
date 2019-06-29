@@ -1,5 +1,5 @@
   let money, income, addExpenses, deposit, mission, period;
-  alert('Hello World Alert!');
+  //alert('Hello World Alert!');
 
 /*
 function pow(x, n) {
