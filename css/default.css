@@ -20,3 +20,6 @@ h1, h2, p {
 p {
     line-height: 30px;
 }
+.text-center {
+    text-align: center
+}

@@ -1,6 +1,6 @@
   let money, income, addExpenses, deposit, mission, period;
   alert('Hello World Alert!');
-  console.log('Hello World console.log!');
+
 /*
 function pow(x, n) {
   let result = 1;
