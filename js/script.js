@@ -7,7 +7,7 @@ let money = 12000,
   period  = 7,
   budgetDay = money/30;
 
-console.log(money, income, deposit);
+console.log(typeof money, typeof income, typeof deposit);
 console.log(income.length);
 console.log('Период ' + period + ' месяцев');
 console.log('Цель заработать ' + mission + ' рублей/долларов/гривен/юани');
