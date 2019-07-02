@@ -21,15 +21,26 @@ for(let i = 0; i < Number(addExpensesArr.length); i++) {
 }
 console.log('дневной бюджет ' + budgetDay);
 /**/
+function isNumber(num) {
+    let result;
 
-let money = prompt('Ваш месячный доход?', '30000'), //при отмене null
+    if(!isNaN(parseFloat(num))) {
+        result = parseFloat(num);
+    } else {
+        alert('Неправильно введены данные, будет присвоено значение по умолчанию - 1');
+        result = 1;
+    }
+      
+    return result;
+}
+let money = isNumber(prompt('Ваш месячный доход?', '30000')), //при отмене null
     addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'Налоги, Квартира, Пиво'), 
     deposit = confirm('Есть ли у вас депозит в банке?'), //в случаи согласия сохранит true, в противном случаи false
     income = 'Фрилансер',
     questionExpenses1 = prompt('Какие обязательные ежемесячные расходы у вас есть?', 'Дорога'),
-    questionExpenditure1 = prompt('Во сколько это обойдется?', '2000'),
+    questionExpenditure1 = isNumber(prompt('Во сколько это обойдется?', '2000')),
     questionExpenses2 = prompt('Какие обязательные ежемесячные расходы у вас есть?', 'Налоги'),
-    questionExpenditure2 = prompt('Во сколько это обойдется?', '3000'),
+    questionExpenditure2 = isNumber(prompt('Во сколько это обойдется?', '3000')),
     mission = 2500000,
     budgetMonth = money - questionExpenditure1 - questionExpenditure2,
     budgetDay = Math.floor(budgetMonth/30);
