@@ -36,6 +36,7 @@ let money = prompt('Ваш месячный доход?', '30000'), //при о�
 console.log(addExpenses.split(', '));
 console.log(typeof parseFloat(money), typeof income, typeof deposit);
 console.log('Вычислить доход за месяц, учитывая обязательные расходы' + budgetMonth);
+console.log('Зная budgetMonth, посчитать за сколько месяцев будет достигнута цель mission, вывести в консоль, округляя в большую сторону' + Math.ceil(mission/budgetMonth));
 /*
 function pow(x, n) {
   let result = 1;
