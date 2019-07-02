@@ -31,12 +31,25 @@ let money = prompt('Ваш месячный доход?', '30000'), //при о�
     questionExpenses2 = prompt('Какие обязательные ежемесячные расходы у вас есть?', 'Налоги'),
     questionExpenditure2 = prompt('Во сколько это обойдется?', '3000'),
     mission = 2500000,
-    budgetMonth = money - questionExpenditure1 - questionExpenditure2;
+    budgetMonth = money - questionExpenditure1 - questionExpenditure2,
+    budgetDay = Math.floor(budgetMonth/30);
 
 console.log(addExpenses.split(', '));
 console.log(typeof parseFloat(money), typeof income, typeof deposit);
-console.log('Вычислить доход за месяц, учитывая обязательные расходы' + budgetMonth);
-console.log('Зная budgetMonth, посчитать за сколько месяцев будет достигнута цель mission, вывести в консоль, округляя в большую сторону' + Math.ceil(mission/budgetMonth));
+console.log('Вычислить доход за месяц, учитывая обязательные расходы ' + budgetMonth);
+console.log('Зная budgetMonth, посчитать за сколько месяцев будет достигнута цель mission, '+
+  'вывести в консоль, округляя в большую сторону ' + Math.ceil(mission/budgetMonth));
+console.log('Дневной бюджет с поправкой на месячный бюджет с округлением в меньшую сторону ' + 
+    budgetDay);
+if(budgetDay > 800) {
+    console.log('Высокий уровень дохода');
+} else if(budgetDay > 300) {
+    console.log('Средний уровень дохода');
+} else if(budgetDay > 0) {
+    console.log('Низкий уровень дохода');
+} else {
+    console.log('Что то пошло не так');
+}
 /*
 function pow(x, n) {
   let result = 1;
