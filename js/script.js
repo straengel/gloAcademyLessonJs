@@ -27,8 +27,8 @@ function isNumber(num) {
     if(!isNaN(parseFloat(num))) {
         result = parseFloat(num);
     } else {
-        alert('Неправильно введены данные, будет присвоено значение по умолчанию - 1');
-        result = 1;
+        result = prompt('Неправильно введены данные, введите данные заново, должно быть число, дробное с точкой');
+        isNumber(result);
     }
       
     return result;
