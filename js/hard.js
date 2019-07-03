@@ -27,5 +27,8 @@ let namePerson = prompt('Это Артем или Максим', 'Артем');
 namePerson == 'Артем' ? console.log('Ваш статус Директор') 
     : namePerson == 'Максим' ? console.log('Ваш статус Преподователь') 
     : console.log('Ваш статус Студент');
+//Альтернативный вариант и лучший
+let status = namePerson == 'Артем' ? 'Директор' : namePerson == 'Максим' ? 'Преподаватель' : 'Студент' ;
+console.log('Ваш статус ' + status);
 
 
