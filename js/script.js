@@ -14,7 +14,7 @@ function isNumber(num) {
     return result;
 }
 
-/*/с выводом модальных окон
+//с выводом модальных окон
 let money = isNumber(prompt('Ваш месячный доход?', '30000')), //при отмене null
     addExpenses = prompt('Перечислите возможные расходы за рассчитываемый период через запятую', 'Налоги, Квартира, Пиво'), 
     deposit = confirm('Есть ли у вас депозит в банке?'), //в случаи согласия сохранит true, в противном случаи false
@@ -28,7 +28,7 @@ let money = isNumber(prompt('Ваш месячный доход?', '30000')), //
     budgetDay = Math.floor(budgetMonth/30);
 /**/
 
-//без вывода модальных окон
+/*/без вывода модальных окон
 let money = 30000, //при отмене null
     addExpenses = 'Налоги, Квартира, Пиво', 
     deposit = true, //в случаи согласия сохранит true, в противном случаи false
@@ -64,7 +64,7 @@ function getExpensesMonth() {
 };
 
 //Функция возвращает Накопления за месяц (Доходы минус расходы) Результат сохранить в переменную accumulatedMonth
-let accumulatedMonth = function getAccumulatedMonth() {
+let accumulatedMonth = function() {
     return money - getExpensesMonth();
 };
 
