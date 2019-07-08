@@ -32,9 +32,13 @@ let start = function() {
         'Налоги, Квартира, Пиво'
     );
     deposit = confirm('Есть ли у вас депозит в банке?');
-    while(isNaN(money) || money == '' || money == null) {
-        money = isNumber(prompt('Ваш месячный доход?', 30000));
-        console.log(money);
+    if(isNaN(money) || money == '' || money == null){
+
+        do {
+            money = isNumber(prompt('Ваш месячный доход?', 30000));
+            console.log(money);
+        }
+        while(isNaN(money) || money == '' || money == null);
     }
 };
 start();
