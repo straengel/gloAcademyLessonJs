@@ -14,17 +14,19 @@ let sortArrNum = function(arr){
 console.log(sortArrNum(arrNum));
 
 //Простые числа
-let maxSizeNum = 10;
+let maxSizeNum = 100;
 
 for (let i=2;  i<=maxSizeNum; i++) {
-    let count = 0;
+    let count = 0, jj;
     for (let j=2; j<i; j++) {
+        
         if (i%j) 
             continue;
+        jj = j;
         count += 1;
     }
     if (!count) 
-        console.log(i);
+        console.log('Делители этого числа: 1 и ' + i);
 }
 
 /*
