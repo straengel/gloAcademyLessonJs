@@ -14,32 +14,31 @@ function isNumber(num) {
 }
 function isString(str) {
     return isNaN(str) ? str : 'Введите строку';
-    // str = +prompt('Необходимо ввести строку');
-    // console.log(str);
-    // if(typeof str === 'string'){
-    //     return str;
-    // }
-        
-    // return isString();
 }
-console.log(isString(prompt('asdfasdf')));
+
+let start = document.getElementById('start'),
+    btnPlus = document.getElementsByTagName('button'),
+    incomePlus = btnPlus[0],
+    expensesPlus = btnPlus[1],
+    additionalIncomeItem = document.querySelectorAll('.additional_income-item'),
+    depositCheck = document.querySelector('#deposit-check'),
+    budgetDayValue = document.getElementsByClassName('.budget_day-value')[0],
+    budgetMonthValue = document.getElementsByClassName('.budget_month-value')[0],
+    expensesMonthValue = document.getElementsByClassName('.expenses_month-value'),
+    accumulatedMonthValue = document.getElementsByClassName('.target-amount')[0], //а хрен знает че
+    additionalIncomeValue = document.getElementsByClassName('additional_expenses-value')[0],
+    additionalExpensesValue = document.getElementsByClassName('additional_expenses-value')[0],
+    incomePeriodValue = document.getElementsByClassName('income_period-value')[0],
+    targetMonthValue = document.getElementsByClassName('target_month-value')[0],
+    salaryAmount = document.querySelector('.salary-amount'),
+    incomeTitle = document.querySelector('.income-title'),
+    incomeAmount = document.querySelector('.income-amount'),
+    expensesTitle = document.querySelector('.expenses-title'),
+    expensesAmount = document.querySelector('.expenses-amount'),
+    additionalExpenses = document.querySelector('.additional-expenses'),
+    periodSelect = document.querySelector('.period-select');
 
 let money;
-
-//Просто функция старт
-let start = function() {
-    appData.budget = money = isNumber(prompt('Ваш месячный доход?', 30000));
-    if(isNaN(money) || money == '' || money == null){
-
-        do {
-            money = isNumber(prompt('Ваш месячный доход?', 30000));
-            console.log(money);
-        }
-        while(isNaN(money) || money == '' || money == null);
-    }
-};
-//Начнем
-
 
 let appData = {
     budget : money,
@@ -57,17 +56,16 @@ let appData = {
     moneyDeposit: 0,
     mission: 5000000,
     period: 3, 
-    expensesMonth : function(){
-        let sum = 0;
-        for (let key in appData.expenses) {
-            sum += appData.expenses[key];
+    start: function() {
+       money = isNumber(prompt('Ваш месячный доход?', 30000));
+        do {
+            money = isNumber(prompt('Ваш месячный доход?', 30000));
+            console.log(money);
         }
-        if(appData.income.length>0){
-            for (let key in appData.income) {
-                sum += appData.expenses[key];
-            }
-        }
-        return isNumber(sum);
+        while(isNaN(money) || money == '' || money == null);
+        appData.asking();
+        appData.getExpensesMonth();
+        appData.getBudget();
     },
     //Вопросы по расходам
     asking : function(){
@@ -86,8 +84,20 @@ let appData = {
     },
     //считаем бюджет budgetDay и budgetMonth
     getBudget : function() {
-        appData.budgetMonth = appData.budget - appData.expensesMonth();
+        appData.budgetMonth = appData.budget - appData.getExpensesMonth();
         appData.budgetDay = appData.budgetMonth/30;
+    },
+    getExpensesMonth : function(){
+        let sum = 0;
+        for (let key in appData.expenses) {
+            sum += appData.expenses[key];
+        }
+        if(appData.income.length>0){
+            for (let key in appData.income) {
+                sum += appData.expenses[key];
+            }
+        }
+        return isNumber(sum);
     },
     //Считаем за сколько достигнем цели
     getTargetMonth : function() {
@@ -119,7 +129,8 @@ let appData = {
         return appData.budgetMonth * appData.period;
     }
 };
-start();
+start = addEventListener('click', appData.start);
+/*
 //спросим о расходах
 appData.asking();
 console.log(
