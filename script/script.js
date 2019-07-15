@@ -39,26 +39,23 @@ let start = document.getElementById('start'),
     periodSelect = document.querySelector('.period-select'),
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
     targetAmount = document.querySelector('.target-amount'),
-    incomeItem = document.querySelectorAll('.income-items'); //Цели
+    incomeItems = document.querySelectorAll('.income-items'); //Цели
 
 let money;
 
 let appData = {
-    budget : 0,
-    budgetDay : 0,
-    budgetMonth : 0,
-    //Дополнительный заработок
-    income : {},
-    addIncome : [], //не вижу в ней смысла зачем
-    incomeMonth: 0,
-    //считаем расходы за месяц
-    expenses : {},
-    expensesMonth: 0,
-    //возможные расходы за период
-    addExpenses: [],
-    deposit: false,
-    percentDeposit: 0,
-    moneyDeposit: 0,
+    budget : 0, //просто бюджет
+    budgetDay : 0, //дневной доход
+    budgetMonth : 0, //месячный доход
+    income : {}, //ДОПОЛНИТЕЛЬНЫЙ ЗАРАБОТОК
+    addIncome : [], //ДОПОЛНИТЕЛЬНЫЙ ДОХОД
+    incomeMonth: 0, //ДОПОЛНИТЕЛЬНЫЙ ДОХОД в месяц
+    expenses : {}, //записываем название и стоимость ОБЯЗАТЕЛЬНЫХ РАСХОДОВ
+    expensesMonth: 0, //считаем расходы за месяц
+    addExpenses: [], //Возмодные расходы
+    deposit: false, //Дипозит
+    percentDeposit: 0, // Процент за депозита
+    moneyDeposit: 0, //Деньги на дипозитном счету
     start: function() {
         if(salaryAmount === ''){
             alert('Ошибка, поле "Месячный доход" должно быть заполнено');
@@ -123,16 +120,16 @@ let appData = {
             }
         });
     },
+    //1) Переписать метод getIncome аналогично getExpenses
     getIncome: function(){
-        if(confirm('Дополнительный заработок есть?')){
-            appData.income[isString(prompt('Какой у вас дополнительный заработок?', 'Кодю'))] = isNumber(
-                prompt('Сколько в месяц вы на этом зарабатываете?', 10000)
-                );
-        }
-        for(let key in appData.income){
-            appData.incomeMonth += +appData.income[key]
-        }
-        
+        incomeItems.forEach(function(items){
+            let itemIncome = items.querySelector('.income-title').value;
+            let cashIncome = items.querySelector('.income-amount').value;
+            if(itemIncome !== '' && cashIncome !== ''){
+                appData.income[itemIncome] = +cashIncome;
+                appData.incomeMonth += +cashIncome;
+            }
+        });        
     },
     getExpensesMonth : function(){
         let sum = 0;
