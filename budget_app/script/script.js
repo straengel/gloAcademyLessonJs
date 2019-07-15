@@ -22,9 +22,23 @@ console.log(additional);
 //Получить все блоки в правой части программы через классы 
 //(которые имеют класс название-value, 
 //начиная с class="budget_day-value" и заканчивая class="target_month-value">)
-let rightBlock = document.querySelectorAll('.result-total');
-console.log(rightBlock);
 
+let budgetMonthValue = document.getElementsByClassName('budget_month-value')[0],
+    budgetDayValue = document.getElementsByClassName('budget_day-value')[0],
+    expensesMonthValue = document.getElementsByClassName('expenses_month-value')[0],
+    additionalIncomeValue = document.getElementsByClassName('additional_income-value')[0],
+    additionalExpensesValue = document.getElementsByClassName('additional_expenses-value')[0],
+    incomePeriodValue = document.getElementsByClassName('income_period-value')[0],
+    targetMonthValue = document.getElementsByClassName('target_month-value')[0];
+console.log(
+    budgetMonthValue, 
+    budgetDayValue, 
+    expensesMonthValue, 
+    additionalIncomeValue, 
+    additionalExpensesValue,
+    incomePeriodValue,
+    targetMonthValue
+    );
 //Получить оставшиеся поля через querySelector 
 //каждый в отдельную переменную (Инпуты с левой стороны не забудьте про range)
 //Месячный доход*
