@@ -41,8 +41,8 @@ let start = document.getElementById('start'),
     periodAmount = document.querySelector('.period-amount'), //цифирка под ползунком
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
     targetAmount = document.querySelector('.target-amount'),
-    incomeItems = document.querySelectorAll('.income-items'), //Цели
-    dataInputs = document.querySelectorAll('.data input[type=text]');
+    incomeItems = document.querySelectorAll('.income-items'); //Цели
+    //dataInputs = document.querySelectorAll('.data input[type=text]')
 
 let money;
 
@@ -88,9 +88,6 @@ let appData = {
         });
         start.style.display = 'none';
         cancel.style.display = 'block';
-
-        //console.log(appData.budget);
-        // appData.asking();
     },
     showResult: function(){
         budgetMonthValue.value = appData.budgetMonth;
@@ -134,10 +131,40 @@ let appData = {
          * 1) Реализовать так, чтобы инпуты добавлялись пустые 
          * без value при добавлении новых полей в обязательных расходах и дополнительных доходах 
          */
+        /*
+        cloneExpensesItem.querySelector('.expenses-title').addEventListener('keydown', function(e){
+            if(appData.checkString(e.key) !== true){
+                e.preventDefault();
+                return false;
+            }      
+        });
+        cloneExpensesItem.querySelector('.expenses-amount').addEventListener('keydown', function(e){
+            if(appData.checkNumber(e.key) !== true){
+                e.preventDefault();
+                return false;
+            }      
+        });
+        /** */
         cloneExpensesItem.querySelectorAll('input').forEach(function(item){
             item.value = '';
         });
         expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesPlus);
+
+        document.querySelectorAll('.expenses-items').forEach(function(item){
+            item.querySelector('.expenses-amount').addEventListener('keydown', function(e){
+                if(appData.checkNumber(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+            item.querySelector('.expenses-title').addEventListener('keydown', function(e){
+                if(appData.checkString(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+        });
+
         expensesItems = document.querySelectorAll('.expenses-items');
         if(expensesItems.length === 3)
             expensesPlus.style.display = 'none';
@@ -153,6 +180,23 @@ let appData = {
             item.value = '';
         });
         incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
+
+        document.querySelectorAll('.income-items').forEach(function(item){
+            console.log(item.querySelector('.income-amount'));
+            item.querySelector('.income-amount').addEventListener('keydown', function(e){
+                if(appData.checkNumber(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+            item.querySelector('.income-title').addEventListener('keydown', function(e){
+                if(appData.checkString(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+        });
+
         incomeItems = document.querySelectorAll('.income-items');
         if(incomeItems.length === 3)
             incomePlus.style.display = 'none';
@@ -238,12 +282,13 @@ let appData = {
     },
     checkString: function(str){
         let regexp = /[a-яА-Я,\s]/i;
-        regexp = /[^А-яё\s]/i;
-        if(!regexp.test(str) || str == ',' || str == '.' || str == '!' || str == '-' || str == '_' || str == '/')
+        regexp = /[А-яё/B]/i;
+        if(regexp.test(str) || str == ',' || str == '.' || str == '!' || str == '-' || str == '_' || str == '/' || str == ' '){
             return true;
-        else
+        } else {
             return false;
-    }
+        }
+    },
 };
 salaryAmount.addEventListener('keydown', function(e){
     if(this.value !== '')
@@ -255,19 +300,65 @@ salaryAmount.addEventListener('keydown', function(e){
         e.preventDefault();
         return false;
     }        
-})
+});
+/*
 additionalExpensesItem.addEventListener('keydown', function(e){
     if(appData.checkString(e.key) !== true){
         e.preventDefault();
         return false;
     }      
 });
+/** */
 start.addEventListener('click', appData.start);
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('change', appData.changePeriodAmount);
 
+additionalExpensesItem.addEventListener('keydown', function(e){
+    if(appData.checkString(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
+additionalIncomeItem.forEach(function(item){
+    item.addEventListener('keydown', function(e){
+        if(appData.checkString(e.key) !== true){
+            e.preventDefault();
+            return false;
+        }      
+    });
+});
+document.querySelector('.data input.income-title').addEventListener('keydown', function(e){
+    if(appData.checkString(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
+document.querySelector('.data input.income-amount').addEventListener('keydown', function(e){
+    if(appData.checkNumber(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
+document.querySelector('.data input.expenses-amount').addEventListener('keydown', function(e){
+    if(appData.checkNumber(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
+document.querySelector('.data input.expenses-title').addEventListener('keydown', function(e){
+    if(appData.checkString(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
 
+document.querySelector('.data input.target-amount').addEventListener('keydown', function(e){
+    if(appData.checkNumber(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
 /*
 //спросим о расходах
 console.log(
