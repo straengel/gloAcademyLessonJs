@@ -17,6 +17,7 @@ function isString(str) {
 }
 
 let start = document.getElementById('start'),
+    cancel = document.getElementById('cancel'),
     btnPlus = document.getElementsByTagName('button'),
     incomePlus = btnPlus[0],
     expensesPlus = btnPlus[1],
@@ -36,10 +37,12 @@ let start = document.getElementById('start'),
     expensesTitle = document.querySelector('.expenses-title'),
     expensesItems = document.querySelectorAll('.expenses-items'), //обяхательные расходы
     additionalExpenses = document.querySelector('.additional-expenses'),
-    periodSelect = document.querySelector('.period-select'),
+    periodSelect = document.querySelector('.period-select'), //ползунок
+    periodAmount = document.querySelector('.period-amount'), //цифирка под ползунком
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
     targetAmount = document.querySelector('.target-amount'),
-    incomeItems = document.querySelectorAll('.income-items'); //Цели
+    incomeItems = document.querySelectorAll('.income-items'), //Цели
+    dataInputs = document.querySelectorAll('.data input[type=text]');
 
 let money;
 
@@ -57,10 +60,14 @@ let appData = {
     percentDeposit: 0, // Процент за депозита
     moneyDeposit: 0, //Деньги на дипозитном счету
     start: function() {
-        if(salaryAmount === ''){
-            alert('Ошибка, поле "Месячный доход" должно быть заполнено');
+        /**
+         * 7) Вместо проверки поля Месячный доход в методе Start, 
+         * запретить нажатие кнопки Рассчитать пока поле Месячный доход пустой
+         */
+        if(salaryAmount.value === ''){
+            start.setAttribute('disabled', true);
             return;
-        }
+        } 
         appData.budget = +salaryAmount.value;
         appData.getExpenses();
         appData.getIncome();
@@ -70,17 +77,34 @@ let appData = {
         appData.getBudget();
 
         appData.showResult();
+        /**
+         * 6) Блокировать все input[type=text] с левой стороны 
+         * после нажатия кнопки рассчитать, 
+         * после этого кнопка Рассчитать пропадает и появляется кнопка Сбросить (есть в верстке) 
+         * на кнопку сбросить пока ничего не навешиваем
+         */
+        dataInputs.forEach(function(item){
+            item.setAttribute('disabled', true);
+        });
+        start.style.display = 'none';
+        cancel.style.display = 'block';
+
         //console.log(appData.budget);
         // appData.asking();
     },
     showResult: function(){
         budgetMonthValue.value = appData.budgetMonth;
-        budgetDayValue.value = appData.budgetDay;
+        //3) Округлить вывод дневного бюджета
+        budgetDayValue.value = Math.ceil(appData.budgetDay);
         expensesMonthValue.value = appData.expensesMonth;
         additionalExpensesValue.value = appData.addExpenses.join(', ');
         additionalIncomeValue.value = appData.addIncome.join(', ');
         targetMonthValue.value = Math.ceil(appData.getTargetMonth());
         incomePeriodValue.value = appData.calcPeriod();
+        //5) Добавить обработчик события внутри метода showResult, 
+        //который будет отслеживать период и сразу менять значение в поле “Накопления за период”
+        //ну он не будет отслеживать вот прям так
+        periodSelect.addEventListener('change', appData.calcPeriod);
     },
     getAddExpenses: function(){
         let addExpenses = additionalExpensesItem.value.split(',');
@@ -110,6 +134,14 @@ let appData = {
         expensesItems = document.querySelectorAll('.expenses-items');
         if(expensesItems.length === 3)
             expensesPlus.style.display = 'none';
+    },
+    //2) Создать метод addIncomeBlock аналогичный addExpensesBlock
+    addIncomeBlock: function(){
+        let cloneIncomeItem = incomeItems[0].cloneNode(true);
+        incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
+        incomeItems = document.querySelectorAll('.income-items');
+        if(incomeItems.length === 3)
+            incomePlus.style.display = 'none';
     },
     getExpenses: function(){
         expensesItems.forEach(function(items){
@@ -173,10 +205,25 @@ let appData = {
     //какой доход мы получим за период
     calcPeriod: function(){
         return appData.budgetMonth * periodSelect.value;
-    }
+    },
+    //4) Число под полоской (range) должно меняться в зависимости от позиции range
+    //изменение цифирки
+    changePeriodAmount: function(){
+        periodAmount.textContent = periodSelect.value;
+    },
 };
+salaryAmount.addEventListener('keydown', function(){
+    if(this.value !== '')
+        start.removeAttribute('disabled');
+    else
+        start.setAttribute('disabled', true);
+})
 start.addEventListener('click', appData.start);
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
+incomePlus.addEventListener('click', appData.addIncomeBlock);
+periodSelect.addEventListener('change', appData.changePeriodAmount);
+
+
 /*
 //спросим о расходах
 console.log(
