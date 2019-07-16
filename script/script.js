@@ -130,6 +130,13 @@ let appData = {
     },
     addExpensesBlock: function(){
         let cloneExpensesItem = expensesItems[0].cloneNode(true);
+        /** HARD
+         * 1) Реализовать так, чтобы инпуты добавлялись пустые 
+         * без value при добавлении новых полей в обязательных расходах и дополнительных доходах 
+         */
+        cloneExpensesItem.querySelectorAll('input').forEach(function(item){
+            item.value = '';
+        });
         expensesItems[0].parentNode.insertBefore(cloneExpensesItem, expensesPlus);
         expensesItems = document.querySelectorAll('.expenses-items');
         if(expensesItems.length === 3)
@@ -138,6 +145,13 @@ let appData = {
     //2) Создать метод addIncomeBlock аналогичный addExpensesBlock
     addIncomeBlock: function(){
         let cloneIncomeItem = incomeItems[0].cloneNode(true);
+        /**
+         * 1) Реализовать так, чтобы инпуты добавлялись пустые 
+         * без value при добавлении новых полей в обязательных расходах и дополнительных доходах 
+         */
+        cloneIncomeItem.querySelectorAll('input').forEach(function(item){
+            item.value = '';
+        });
         incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
         incomeItems = document.querySelectorAll('.income-items');
         if(incomeItems.length === 3)
@@ -211,13 +225,43 @@ let appData = {
     changePeriodAmount: function(){
         periodAmount.textContent = periodSelect.value;
     },
+    /** Hard
+     *  2) Поля с placeholder="Наименование" разрешить ввод только русских
+     *  букв пробелов и знаков препинания
+     */
+    checkNumber: function(num){
+        let regexp = /[0-9]/i;
+        if(regexp.test(num))
+            return true;
+        else
+            return false;
+    },
+    checkString: function(str){
+        let regexp = /[a-яА-Я,\s]/i;
+        regexp = /[^А-яё\s]/i;
+        if(!regexp.test(str) || str == ',' || str == '.' || str == '!' || str == '-' || str == '_' || str == '/')
+            return true;
+        else
+            return false;
+    }
 };
-salaryAmount.addEventListener('keydown', function(){
+salaryAmount.addEventListener('keydown', function(e){
     if(this.value !== '')
         start.removeAttribute('disabled');
     else
         start.setAttribute('disabled', true);
+
+    if(appData.checkNumber(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }        
 })
+additionalExpensesItem.addEventListener('keydown', function(e){
+    if(appData.checkString(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
 start.addEventListener('click', appData.start);
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
