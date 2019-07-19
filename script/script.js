@@ -60,23 +60,20 @@ let appData = {
     percentDeposit: 0, // Процент за депозита
     moneyDeposit: 0, //Деньги на дипозитном счету
     start: function() {
-        /**
-         * 7) Вместо проверки поля Месячный доход в методе Start, 
-         * запретить нажатие кнопки Рассчитать пока поле Месячный доход пустой
-         */
+        console.log(this);
         if(salaryAmount.value === ''){
             start.setAttribute('disabled', true);
             return;
         } 
-        appData.budget = +salaryAmount.value;
-        appData.getExpenses();
-        appData.getIncome();
-        appData.getExpensesMonth();
-        appData.getAddExpenses();
-        appData.getAddIncome();
-        appData.getBudget();
+        this.budget = +salaryAmount.value;
+        this.getExpenses();
+        this.getIncome();
+        this.getExpensesMonth();
+        this.getAddExpenses();
+        this.getAddIncome();
+        this.getBudget();
 
-        appData.showResult();
+        this.showResult();
         /**
          * 6) Блокировать все input[type=text] с левой стороны 
          * после нажатия кнопки рассчитать, 
@@ -90,19 +87,41 @@ let appData = {
         start.style.display = 'none';
         cancel.style.display = 'block';
     },
+    reset: function(){
+        //Сбросим  все инпуты по правой стороне
+        document.querySelectorAll('.result input[type=text]').forEach(function(item){
+            item.value = '';
+        });
+        //разблокируем все инпуты по левой стороне и сбрасываем значения
+        dataInputs = document.querySelectorAll('.data input[type=text]');
+        dataInputs.forEach(function(item){
+            item.removeAttribute('disabled');
+            item.value = '';
+        });
+        this.deleteExpensesBlock();
+        this.deleteIncomeBlock();
+        //удаление checked
+        depositCheck.removeAttribute('checked');
+        //Сбрасываем период и полоску
+        periodSelect.value = 1;
+        this.changePeriodAmount();
+        
+        start.style.display = 'block';
+        cancel.style.display = 'none';
+        
+    },
     showResult: function(){
-        budgetMonthValue.value = appData.budgetMonth;
-        //3) Округлить вывод дневного бюджета
-        budgetDayValue.value = Math.ceil(appData.budgetDay);
-        expensesMonthValue.value = appData.expensesMonth;
-        additionalExpensesValue.value = appData.addExpenses.join(', ');
-        additionalIncomeValue.value = appData.addIncome.join(', ');
-        targetMonthValue.value = Math.ceil(appData.getTargetMonth());
-        incomePeriodValue.value = appData.calcPeriod();
+        budgetMonthValue.value = this.budgetMonth;
+        budgetDayValue.value = Math.ceil(this.budgetDay);
+        expensesMonthValue.value = this.expensesMonth;
+        additionalExpensesValue.value = this.addExpenses.join(', ');
+        additionalIncomeValue.value = this.addIncome.join(', ');
+        targetMonthValue.value = Math.ceil(this.getTargetMonth());
+        incomePeriodValue.value = this.calcPeriod();
         //5) Добавить обработчик события внутри метода showResult, 
         //который будет отслеживать период и сразу менять значение в поле “Накопления за период”
         //ну он не будет отслеживать вот прям так
-        periodSelect.addEventListener('change', appData.calcPeriod);
+        periodSelect.addEventListener('change', this.calcPeriod);
     },
     getAddExpenses: function(){
         let addExpenses = additionalExpensesItem.value.split(',');
@@ -123,29 +142,39 @@ let appData = {
     },
     //считаем бюджет budgetDay и budgetMonth
     getBudget : function() {
-        appData.budgetMonth = appData.budget + appData.incomeMonth - appData.expensesMonth;
-        appData.budgetDay = appData.budgetMonth/30;
+        this.budgetMonth = this.budget + appData.incomeMonth - appData.expensesMonth;
+        this.budgetDay = this.budgetMonth/30;
     },
+    //Дополнительный доход добавляем блоки при нажатии на плюсик
+    addIncomeBlock: function(){
+        let cloneIncomeItem = incomeItems[0].cloneNode(true);
+        cloneIncomeItem.querySelectorAll('input').forEach(function(item){
+            item.value = '';
+        });
+        incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
+
+        document.querySelectorAll('.income-items').forEach(function(item){
+            item.querySelector('.income-amount').addEventListener('keydown', function(e){
+                if(appData.checkNumber(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+            item.querySelector('.income-title').addEventListener('keydown', function(e){
+                if(appData.checkString(e.key) !== true){
+                    e.preventDefault();
+                    return false;
+                }      
+            });
+        });
+
+        incomeItems = document.querySelectorAll('.income-items');
+        if(incomeItems.length === 3)
+            incomePlus.style.display = 'none';
+    },
+    //Обязательные расходы добавляем блоки при нажатии на плюсик
     addExpensesBlock: function(){
         let cloneExpensesItem = expensesItems[0].cloneNode(true);
-        /** HARD
-         * 1) Реализовать так, чтобы инпуты добавлялись пустые 
-         * без value при добавлении новых полей в обязательных расходах и дополнительных доходах 
-         */
-        /*
-        cloneExpensesItem.querySelector('.expenses-title').addEventListener('keydown', function(e){
-            if(appData.checkString(e.key) !== true){
-                e.preventDefault();
-                return false;
-            }      
-        });
-        cloneExpensesItem.querySelector('.expenses-amount').addEventListener('keydown', function(e){
-            if(appData.checkNumber(e.key) !== true){
-                e.preventDefault();
-                return false;
-            }      
-        });
-        /** */
         cloneExpensesItem.querySelectorAll('input').forEach(function(item){
             item.value = '';
         });
@@ -170,48 +199,23 @@ let appData = {
         if(expensesItems.length === 3)
             expensesPlus.style.display = 'none';
     },
-    //2) Создать метод addIncomeBlock аналогичный addExpensesBlock
-    addIncomeBlock: function(){
-        let cloneIncomeItem = incomeItems[0].cloneNode(true);
-        /**
-         * 1) Реализовать так, чтобы инпуты добавлялись пустые 
-         * без value при добавлении новых полей в обязательных расходах и дополнительных доходах 
-         */
-        cloneIncomeItem.querySelectorAll('input').forEach(function(item){
-            item.value = '';
+    //Дополнительный доход добавляем блоки при нажатии на плюсик
+    deleteIncomeBlock: function(){
+        document.querySelectorAll('.income-items').forEach(function(item,i){
+            if(i === 0) return;
+            item.remove();
         });
-        incomeItems[0].parentNode.insertBefore(cloneIncomeItem, incomePlus);
-
-        document.querySelectorAll('.income-items').forEach(function(item){
-            console.log(item.querySelector('.income-amount'));
-            item.querySelector('.income-amount').addEventListener('keydown', function(e){
-                if(appData.checkNumber(e.key) !== true){
-                    e.preventDefault();
-                    return false;
-                }      
-            });
-            item.querySelector('.income-title').addEventListener('keydown', function(e){
-                if(appData.checkString(e.key) !== true){
-                    e.preventDefault();
-                    return false;
-                }      
-            });
-        });
-
-        incomeItems = document.querySelectorAll('.income-items');
-        if(incomeItems.length === 3)
-            incomePlus.style.display = 'none';
+        incomePlus.style.display = 'block';
     },
-    getExpenses: function(){
-        expensesItems.forEach(function(items){
-            let itemExpenses = items.querySelector('.expenses-title').value;
-            let cashExpenses = items.querySelector('.expenses-amount').value;
-            if(itemExpenses !== '' && cashExpenses !== ''){
-                appData.expenses[itemExpenses] = cashExpenses;
-            }
+    //Обязательные расходы добавляем блоки при нажатии на плюсик
+    deleteExpensesBlock: function(){
+        document.querySelectorAll('.expenses-items').forEach(function(item,i){
+            if(i === 0) return;
+            item.remove();
         });
+        expensesPlus.style.display = 'block';
     },
-    //1) Переписать метод getIncome аналогично getExpenses
+    //Дополнительный доход получаем данные и записываем в income
     getIncome: function(){
         incomeItems.forEach(function(items){
             let itemIncome = items.querySelector('.income-title').value;
@@ -222,17 +226,28 @@ let appData = {
             }
         });        
     },
+    //Обязательные расходы получаем данные и записываем в expenses
+    getExpenses: function(){
+        expensesItems.forEach(function(items){
+            let itemExpenses = items.querySelector('.expenses-title').value;
+            let cashExpenses = items.querySelector('.expenses-amount').value;
+            if(itemExpenses !== '' && cashExpenses !== ''){
+                appData.expenses[itemExpenses] = cashExpenses;
+            }
+        });
+    },
+    //Считаем все обязательные расходы и кладем в expensesMonth
     getExpensesMonth : function(){
         let sum = 0;
-        for (let key in appData.expenses) {
-            sum += isNumber(appData.expenses[key]);
+        for (let key in this.expenses) {
+            sum += isNumber(this.expenses[key]);
         }
-        if(appData.income.length>0){
-            for (let key in appData.income) {
-                sum += isNumber(appData.expenses[key]);
+        if(this.income.length>0){
+            for (let key in this.income) {
+                sum += isNumber(this.expenses[key]);
             }
         }
-        appData.expensesMonth = isNumber(sum);
+        this.expensesMonth = isNumber(sum);
         //return isNumber(sum);
     },
     //Считаем за сколько достигнем цели
@@ -241,13 +256,13 @@ let appData = {
     },
     //Выводим статус
     getStatusIncome : function() {
-        if (appData.budgetDay > 800) {
+        if (this.budgetDay > 800) {
             return('Высокий уровень дохода');
-        } else if (appData.budgetDay > 300 && appData.budgetDay < 800) {
+        } else if (this.budgetDay > 300 && this.budgetDay < 800) {
             return('Средний уровень дохода');
-        } else if (appData.budgetDay > 0 && appData.budgetDay < 300) {
+        } else if (this.budgetDay > 0 && this.budgetDay < 300) {
             return('Низкий уровень дохода');
-        } else if (appData.budgetDay < 0){
+        } else if (this.budgetDay < 0){
             return('Что-то пошло не так');
         } else {
             return('Нулевой уровень дохода');
@@ -255,23 +270,22 @@ let appData = {
     },
     //добавить данный о дипозите
     getInfoDeposit: function(){
-        appData.deposit = confirm('Есть ли у вас депозит в банке?'); 
-        if(appData.deposit){
-            appData.percentDeposit = isNumber(prompt('Какой годовой процент?', 10));
-            appData.moneyDeposit = isNumber(prompt('Какая сумма заложена?', 10000));
+        this.deposit = confirm('Есть ли у вас депозит в банке?'); 
+        if(this.deposit){
+            this.percentDeposit = isNumber(prompt('Какой годовой процент?', 10));
+            this.moneyDeposit = isNumber(prompt('Какая сумма заложена?', 10000));
         }
     },
     //какой доход мы получим за период
     calcPeriod: function(){
-        return appData.budgetMonth * periodSelect.value;
+        return this.budgetMonth * periodSelect.value;
     },
-    //4) Число под полоской (range) должно меняться в зависимости от позиции range
     //изменение цифирки
     changePeriodAmount: function(){
         periodAmount.textContent = periodSelect.value;
     },
     /** Hard
-     *  2) Поля с placeholder="Наименование" разрешить ввод только русских
+     *  Поля с placeholder="Наименование" разрешить ввод только русских
      *  букв пробелов и знаков препинания
      */
     checkNumber: function(num){
@@ -291,6 +305,7 @@ let appData = {
         }
     },
 };
+
 salaryAmount.addEventListener('keydown', function(e){
     if(this.value !== '')
         start.removeAttribute('disabled');
@@ -302,15 +317,16 @@ salaryAmount.addEventListener('keydown', function(e){
         return false;
     }        
 });
-/*
-additionalExpensesItem.addEventListener('keydown', function(e){
-    if(appData.checkString(e.key) !== true){
-        e.preventDefault();
-        return false;
-    }      
-});
-/** */
-start.addEventListener('click', appData.start);
+//а нифига не понятно
+function bind(func, context){
+    return function() {
+      return func.apply(context, arguments);
+    };
+}
+//start.addEventListener('click', appData.start);
+start.addEventListener('click', bind(appData.start, appData));
+cancel.addEventListener('click', bind(appData.reset, appData));
+
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
 periodSelect.addEventListener('change', appData.changePeriodAmount);
@@ -321,6 +337,7 @@ additionalExpensesItem.addEventListener('keydown', function(e){
         return false;
     }      
 });
+
 additionalIncomeItem.forEach(function(item){
     item.addEventListener('keydown', function(e){
         if(appData.checkString(e.key) !== true){
@@ -329,24 +346,28 @@ additionalIncomeItem.forEach(function(item){
         }      
     });
 });
+
 document.querySelector('.data input.income-title').addEventListener('keydown', function(e){
     if(appData.checkString(e.key) !== true){
         e.preventDefault();
         return false;
     }      
 });
+
 document.querySelector('.data input.income-amount').addEventListener('keydown', function(e){
     if(appData.checkNumber(e.key) !== true){
         e.preventDefault();
         return false;
     }      
 });
+
 document.querySelector('.data input.expenses-amount').addEventListener('keydown', function(e){
     if(appData.checkNumber(e.key) !== true){
         e.preventDefault();
         return false;
     }      
 });
+
 document.querySelector('.data input.expenses-title').addEventListener('keydown', function(e){
     if(appData.checkString(e.key) !== true){
         e.preventDefault();
@@ -360,32 +381,34 @@ document.querySelector('.data input.target-amount').addEventListener('keydown', 
         return false;
     }      
 });
-/*
-//спросим о расходах
-console.log(
-    appData.addExpenses.split(', ').map(word => word[0].toUpperCase() + word.substring(1)).join(', ')
-);
-//расчитаем бюджет
-appData.getBudget();
-appData.getInfoDeposit();
-console.log('Месячный доход  ' + appData.budget);
-console.log('Дневной бюджет ' + appData.budgetDay);
-console.log('Месячный бюджет с учетом расходов ' + appData.budgetMonth);
-console.log('За сколько будет достигнута цель ' + appData.getTargetMonth());
-console.log('Ваш статус: ' + appData.getStatusIncome());
-console.log('какой доход мы получим за период ' + appData.period + ': ' + appData.calcPeriod());
-for (let k in appData) {
-    console.log('Наша программа включает в себя данные: ' + k);
-}
-/*
-if (appData.getTargetMonth() < 0) {
-    console.log("Цель не будет достигнута");
-} else {
-    console.log("Цель будет достигнута");
-}
-console.log('Ваш статус: ', getStatusIncome());
-*/
-
+/**
+ * 3 правила this
+ * 1. Привязка по умолчанию foo() в  this будет объект window
+ * 2. не явная привязка obj.foo() в  this будет объект obj
+ * 3. Явная привязка нужна для того, чтобы использовать конкретный объект при вызове функции
+ * apply - принимает массив аргументов, которые будут разобраны и переданы в функцию, которую вызываем
+ * call - принимает сколько угодно параметров через запятую
+ * оба метода первым параметром принимает объект тот, 
+ * который мы хотим привязать к контексту вызова this
+ * 4. Привязка new
+ let obj = {
+     x: 10,
+     y: 15
+ }
+ function newTest(){
+     console.log('this: ', this)
+ }
+ newTest.apply(obj);
+ newTest.call(obj);
+ */
+/**
+ * Есть трюк жесткая привязка, когда внутри фнукции вызываем жесткую привязку
+ * function hardBind(hard){
+ *  newTest.call(herd)
+ * } 
+ * setTimeout(hardBind, 500, obj);
+ * выведиться obj в консоли
+ */
 /*
 function pow(x, n) {
   let result = 1;
@@ -402,4 +425,13 @@ if (n < 0) {
 } else {
   alert( pow(x, n) );
 }
-/* */
+/**/
+/*
+* пример блокировки
+additionalExpensesItem.addEventListener('keydown', function(e){
+    if(appData.checkString(e.key) !== true){
+        e.preventDefault();
+        return false;
+    }      
+});
+//*/
