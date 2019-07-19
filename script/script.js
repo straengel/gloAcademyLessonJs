@@ -41,8 +41,8 @@ let start = document.getElementById('start'),
     periodAmount = document.querySelector('.period-amount'), //цифирка под ползунком
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
     targetAmount = document.querySelector('.target-amount'),
-    incomeItems = document.querySelectorAll('.income-items'); //Цели
-    //dataInputs = document.querySelectorAll('.data input[type=text]')
+    incomeItems = document.querySelectorAll('.income-items'), //Цели
+    dataInputs;
 
 let money;
 
@@ -83,6 +83,7 @@ let appData = {
          * после этого кнопка Рассчитать пропадает и появляется кнопка Сбросить (есть в верстке) 
          * на кнопку сбросить пока ничего не навешиваем
          */
+        dataInputs = document.querySelectorAll('.data input[type=text]');
         dataInputs.forEach(function(item){
             item.setAttribute('disabled', true);
         });
