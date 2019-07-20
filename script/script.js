@@ -60,7 +60,6 @@ let appData = {
     percentDeposit: 0, // Процент за депозита
     moneyDeposit: 0, //Деньги на дипозитном счету
     start: function() {
-        console.log(this);
         if(salaryAmount.value === ''){
             start.setAttribute('disabled', true);
             return;
@@ -101,7 +100,7 @@ let appData = {
         this.deleteExpensesBlock();
         this.deleteIncomeBlock();
         //удаление checked
-        depositCheck.removeAttribute('checked');
+        depositCheck.checked = false;
         //Сбрасываем период и полоску
         periodSelect.value = 1;
         this.changePeriodAmount();
@@ -317,15 +316,33 @@ salaryAmount.addEventListener('keydown', function(e){
         return false;
     }        
 });
+// Замыкание пример
+//замыкание нужно, чтобы использовать пременные внутри других функций
+// function a() {
+//     let grandpa = 'grandpa';
+//     return b => {
+//         let father = 'father';
+//         return c => {
+//             let son = 'son';
+//             return `${grandpa} > ${father} > ${son}`;
+//         }
+//     }
+// }
+
+// const myFunc = a()()();
+// console.log(myFunc);
+
+
+
 //а нифига не понятно
-function bind(func, context){
+function bindMy(func, context){
     return function() {
       return func.apply(context, arguments);
     };
 }
 //start.addEventListener('click', appData.start);
-start.addEventListener('click', bind(appData.start, appData));
-cancel.addEventListener('click', bind(appData.reset, appData));
+start.addEventListener('click', bindMy(appData.start, appData));
+cancel.addEventListener('click', bindMy(appData.reset, appData));
 
 expensesPlus.addEventListener('click', appData.addExpensesBlock);
 incomePlus.addEventListener('click', appData.addIncomeBlock);
