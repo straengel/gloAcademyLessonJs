@@ -1,42 +1,72 @@
 'use strict';
-
-class DomElement{
-    constructor(selector, height, width, bg, fontSize){
-        this.selector = selector;
-        this.height = height;
-        this.width = width;
-        this.bg = bg;
-        this.fontSize = fontSize;
-    }
-
-    createElementDom(){
-        let el,
-        str = this.selector,
-        symb = str[0];
-        str = str.substring(1);
-        if(symb === '.'){
-            el = document.createElement('div');
-            el.setAttribute('class', str);
-        } else if(symb === '#'){
-            el = document.createElement('p');
+document.addEventListener('DOMContentLoaded', function() {
+    class DomElement{
+        constructor(selector, height, width, bg, fontSize){
+            this.selector = selector;
+            this.height = height;
+            this.width = width;
+            this.bg = bg;
+            this.fontSize = fontSize;
         }
-        el.style.cssText = `
-            height: ${this.height}px;
-            width: ${this.width}px;
-            background: ${this.bg};
-            font-size: ${this.fontSize}px;
-        `;
-        return el;
+    
+        createElementDom(){
+            let el,
+            str = this.selector,
+            symb = str[0];
+            str = str.substring(1);
+            if(symb === '.'){
+                el = document.createElement('div');
+                el.setAttribute('class', str);
+            } else if(symb === '#'){
+                el = document.createElement('p');
+            }
+            el.style.cssText = `
+                height: ${this.height}px;
+                width: ${this.width}px;
+                background: ${this.bg};
+                font-size: ${this.fontSize}px;
+                position: absolute;
+            `;
+            return el;
+        }
     }
+    let objDom = new DomElement('#', 100, 100, 'green', 16),
+    el;
+    
+    el = objDom.createElementDom();
+    document.body.insertBefore(el, document.body.firstChild);
+    el.textContent='Hello World!';
+    document.body.addEventListener('keydown', (e)=>{
+        let key = e.keyCode,
+        perStep = 10;      
+        switch (key) {
+            case 38: //38 = up
+                if((el.getBoundingClientRect().top - perStep) < 0){
+                    el.style.top = 0+'px';
+                } else {
+                    el.style.top = (el.getBoundingClientRect().top - perStep) + 'px';
+                }
+                break;
+            
+            case 39://39 = right
+                el.style.left = (el.getBoundingClientRect().left + perStep) + 'px';
+                break;
+            case 40: //40 = down
+                el.style.top = (el.getBoundingClientRect().top + perStep) + 'px';
+                break;
+            case 37: //37 = left
+                if((el.getBoundingClientRect().left - perStep) < 0){
+                    el.style.left = 0+'px';
+                } else {
+                    el.style.left = (el.getBoundingClientRect().left - perStep) + 'px';
+                }
+                break;
+            default:
+                break;
+        }
+    });
+}, false);
 
-
-}
-let objDom = new DomElement('#', 200, 200, 'red', 16),
-el;
-
-el = objDom.createElementDom();
-document.body.insertBefore(el, document.body.firstChild);
-el.textContent='Hello World!';
 
 //console.log(el);
 //document.body.insertBefore(el, document.body.firstChild);
