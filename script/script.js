@@ -1,17 +1,30 @@
 'use strict';
-function getResult(a,b){
-    let result='', sum=0, lastEl, arr;
-    arr = a ** b;
-    lastEl = String(arr).split('').length;
-    arr = String(arr).split('').map((item, i)=>{
-        if(i == (lastEl-1)){
-            result += String(item) + '=';
-        } else {
-            result += String(item) + '+';
-        }
-        sum += Number(item);
-    });
-    result = result + sum;
-    return result;
+
+const cityArr = {
+    rus: ['Москва', 'Санк-Петербург', 'Новосибирск', 'Екатеринбург', 'Нижний Новгород', 'Казань', 'Челябинск'],
+    uk: ['Киев', 'Харьков', 'Одесса', 'Днепр', 'Донецк', 'Запорожье', 'Львов'],
+    bel: ['Минск', 'Гомель', 'Могилёв', 'Витебск', 'Гродно', 'Брест'],
+    jap: ['Токио', 'Киото', 'Осака', 'Иокогама'] 
 }
-console.log(getResult(3, 10));
+
+let city = document.querySelector('#city');
+let country = document.querySelector('#country');
+
+country.addEventListener('change', (e)=>{
+    let options = document.querySelector('#city');
+    if(options.querySelector('option') !== null)
+        options.innerHTML = "";
+    cityArr[e.target.value].forEach((element, i) => {
+        let option = document.createElement("option");
+        option.value = element;
+        option.text = element;
+        options.appendChild(option);
+    });
+    options.style.display = 'inline-block';
+});
+city.addEventListener('change', (e)=>{
+    document.querySelector('.result').textContent = 
+        String(country.options[country.options.selectedIndex].text) 
+        + ', ' 
+        + String(e.target.value)
+});
