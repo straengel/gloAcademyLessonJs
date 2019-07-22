@@ -1,16 +1,17 @@
 'use strict';
-const calculator = {
-    sum: function(){
-      console.log(document.querySelector('#a').value + document.querySelector('#b').value);
-      this.show().value = Number(document.querySelector('#a').value) + Number(document.querySelector('#b').value);
-    },
-    mult: function(){
-      console.log(document.querySelector('#a').value / document.querySelector('#b').value);
-      this.show().value = document.querySelector('#a').value / document.querySelector('#b').value;
-    },
-    show: function(){
-      return document.querySelector('#res');
-    }
-  }
-  document.querySelector('#sum').addEventListener('click', calculator.sum.bind(calculator));
-  document.querySelector('#mult').addEventListener('click', calculator.mult.bind(calculator));
+function getResult(a,b){
+    let result='', sum=0, lastEl, arr;
+    arr = a ** b;
+    lastEl = String(arr).split('').length;
+    arr = String(arr).split('').map((item, i)=>{
+        if(i == (lastEl-1)){
+            result += String(item) + '=';
+        } else {
+            result += String(item) + '+';
+        }
+        sum += Number(item);
+    });
+    result = result + sum;
+    return result;
+}
+console.log(getResult(3, 10));
