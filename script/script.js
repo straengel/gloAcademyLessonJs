@@ -9,8 +9,9 @@ class DomElement{
         this.fontSize = fontSize;
     }
 
-    createElementDom(str){
+    createElementDom(){
         let el,
+        str = this.selector,
         symb = str[0];
         str = str.substring(1);
         if(symb === '.'){
@@ -19,12 +20,28 @@ class DomElement{
         } else if(symb === '#'){
             el = document.createElement('p');
         }
-        el.cssText
+        el.style.cssText = `
+            height: ${this.height}px;
+            width: ${this.width}px;
+            background: ${this.bg};
+            font-size: ${this.fontSize}px;
+        `;
+        return el;
     }
 
 
 }
-let el = new DomElement()
+let objDom = new DomElement('#', 200, 200, 'red', 16),
+el;
+
+el = objDom.createElementDom();
+document.body.insertBefore(el, document.body.firstChild);
+el.textContent='Hello World!';
+
+//console.log(el);
+//document.body.insertBefore(el, document.body.firstChild);
+
+
 /**
  * 3 правила this
  * 1. Привязка по умолчанию foo() в  this будет объект window
