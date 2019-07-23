@@ -1,11 +1,22 @@
 'use strict';
+function isNumber(num) {
+    let result;
+    if(!isNaN(parseFloat(num))) {
+        result = parseFloat(num);
+    } else if(!isNaN(parseInt(num))){
+        result = parseInt(num);
+    } else {
+        result = prompt('Неправильно введены данные, введите данные заново, должно быть число, дробное с точкой');
+        isNumber(result);
+    }
+    return Number(result);
+}
 const start = document.getElementById('start'),
     cancel = document.getElementById('cancel'),
     btnPlus = document.getElementsByTagName('button'),
     incomePlus = btnPlus[0],
     expensesPlus = btnPlus[1],
     additionalIncomeItem = document.querySelectorAll('.additional_income-item'),
-    depositCheck = document.querySelector('#deposit-check'),
     budgetDayValue = document.getElementsByClassName('budget_day-value')[0],
     budgetMonthValue = document.getElementsByClassName('budget_month-value')[0],
     expensesMonthValue = document.getElementsByClassName('expenses_month-value')[0],
@@ -22,7 +33,11 @@ const start = document.getElementById('start'),
     periodSelect = document.querySelector('.period-select'), //ползунок
     periodAmount = document.querySelector('.period-amount'), //цифирка под ползунком
     additionalExpensesItem = document.querySelector('.additional_expenses-item'),
-    targetAmount = document.querySelector('.target-amount');
+    targetAmount = document.querySelector('.target-amount'),
+    depositCheck = document.querySelector('#deposit-check'),
+    dipositBank = document.querySelector('.deposit-bank'),
+    dispoitAmount = document.querySelector('.deposit-amount'),
+    dispoitPercent = document.querySelector('.deposit-percent');
     
 let incomeItems = document.querySelectorAll('.income-items'), //Цели
     expensesItems = document.querySelectorAll('.expenses-items'), //обяхательные расходы
@@ -318,11 +333,27 @@ class appData{
         }
     }
 
+
     /**
      * Создать новый метод в классе, например eventsListeners. 
      * Перенести все действия, которые остались за классом внутрь него. 
      */
     eventsListeners(){
+        
+        //start.addEventListener('click', appData.start);
+        start.addEventListener('click', this.start.bind(this));
+        cancel.addEventListener('click', this.reset.bind(this));
+        expensesPlus.addEventListener('click', this.addExpensesBlock.bind(this));
+        incomePlus.addEventListener('click', this.addIncomeBlock.bind(this));
+        periodSelect.addEventListener('change', this.changePeriodAmount);
+
+        additionalExpensesItem.addEventListener('keydown', (e) => {
+            if(this.checkString(e.key) !== true){
+                e.preventDefault();
+                return false;
+            }      
+        });
+
         salaryAmount.addEventListener('keydown', (e) => {
             if(this.value !== '')
                 start.removeAttribute('disabled');
@@ -334,22 +365,9 @@ class appData{
                 return false;
             }        
         });
-        //start.addEventListener('click', appData.start);
-        start.addEventListener('click', this.start);
-        cancel.addEventListener('click', this.reset);
 
-        expensesPlus.addEventListener('click', this.addExpensesBlock);
-        incomePlus.addEventListener('click', this.addIncomeBlock);
-        periodSelect.addEventListener('change', this.changePeriodAmount);
-
-        additionalExpensesItem.addEventListener('keydown', (e) => {
-            if(this.checkString(e.key) !== true){
-                e.preventDefault();
-                return false;
-            }      
-        });
-
-        additionalIncomeItem.forEach(function(item){
+        
+        additionalIncomeItem.forEach((item) => {
             item.addEventListener('keydown', (e) => {
                 if(this.checkString(e.key) !== true){
                     e.preventDefault();
@@ -358,34 +376,43 @@ class appData{
             });
         });
 
+        depositCheck.addEventListener('check', () => {
+            if(depositCheck.checked){
+                depositBank.style.display = 'inline-block';
+                dipositAmount.style.display = 'inline-block';
+                this.deposit = 'true';
+            } else {
+                depositBank.style.display = 'none';
+                dipositAmount.style.display = 'none';
+                dipositAmount.value = '';
+                this.deposit = 'true';
+            }
+        });
+
         document.querySelector('.data input.income-title').addEventListener('keydown', (e) => {
             if(this.checkString(e.key) !== true){
                 e.preventDefault();
                 return false;
             }      
         });
-
         document.querySelector('.data input.income-amount').addEventListener('keydown', (e) => {
             if(this.checkNumber(e.key) !== true){
                 e.preventDefault();
                 return false;
             }      
         });
-
         document.querySelector('.data input.expenses-amount').addEventListener('keydown', (e) => {
             if(this.checkNumber(e.key) !== true){
                 e.preventDefault();
                 return false;
             }      
         });
-
         document.querySelector('.data input.expenses-title').addEventListener('keydown', (e) => {
             if(this.checkString(e.key) !== true){
                 e.preventDefault();
                 return false;
             }      
         });
-
         document.querySelector('.data input.target-amount').addEventListener('keydown', (e) => {
             if(this.checkNumber(e.key) !== true){
                 e.preventDefault();
@@ -396,5 +423,5 @@ class appData{
 }
 
 const ob = new appData();
-ob.start();
+//ob.start();
 ob.eventsListeners();
