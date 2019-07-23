@@ -74,8 +74,8 @@ class appData{
         this.getIncomeExpenses(expensesItems);
         this.getExpensesMonth();
         this.getInfoDeposit();
-        this.getAddExpenses(); //переписать 
-        this.getAddIncome(); //переписать
+        this.getAddIncomeExpenses(additionalIncomeItem);
+        this.getAddIncomeExpenses(additionalExpensesItem); 
         this.getBudget();
 
         this.showResult();
@@ -134,25 +134,45 @@ class appData{
 
     //Получить Дополнительный доход или расход, смотря что надо 
     //из функций getAddExpenses getAddIncome
-    //перепись
-    getAddExpenses(){
-        let addExpenses = additionalExpensesItem.value.split(',');
-        addExpenses.forEach((item) => {
-            item = item.trim();
-            if(item !== ''){
-                this.addExpenses.push(item);
-            }
-        });
-    }
-
-    getAddIncome(){
-        additionalIncomeItem.forEach((item) => {
-            let itemValue = item.value.trim();
+    getAddIncomeExpenses(element){
+        let zero = element;
+        if(element === additionalExpensesItem){
+            element = additionalExpensesItem.value.split(',');
+        }
+        element.forEach((item) => {
+            let itemValue
+            if(zero === additionalIncomeItem)
+                itemValue = item.value.trim();
+            else
+                itemValue = item.trim();
             if(itemValue !== ''){
-                this.addIncome.push(itemValue);
+                if(zero === additionalIncomeItem)
+                    this.addIncome.push(itemValue);
+                if(zero === additionalExpensesItem)
+                    this.addExpenses.push(item);
             }
         });
     }
+    
+
+    // getAddExpenses(){
+    //     let addExpenses = additionalExpensesItem.value.split(',');
+    //     addExpenses.forEach((item) => {
+    //         item = item.trim();
+    //         if(item !== ''){
+    //             this.addExpenses.push(item);
+    //         }
+    //     });
+    // }
+
+    // getAddIncome(){
+    //     additionalIncomeItem.forEach((item) => {
+    //         let itemValue = item.value.trim();
+    //         if(itemValue !== ''){
+    //             this.addIncome.push(itemValue);
+    //         }
+    //     });
+    // }
 
     //считаем бюджет budgetDay и budgetMonth
     getBudget () {
