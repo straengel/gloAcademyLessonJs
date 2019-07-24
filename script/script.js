@@ -11,6 +11,7 @@ window.addEventListener('DOMContentLoaded', function(){
         timeHours.textContent = '00';
         timeMinutes.textContent = '00';
         timeSeconds.textContent = '00';
+
         function getTimeRemaining(){
             let dateStop = new Date(deadline).getTime(),
             dateNow = new Date().getTime(),
@@ -46,7 +47,7 @@ window.addEventListener('DOMContentLoaded', function(){
             let setInt = setInterval(updateClock, 1000);
             setTimeout(function(){
                 clearInterval(setInt);
-            }, timeRemaining);
+            }, timeRemaining*1000);
         } 
        
     }
