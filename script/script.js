@@ -1,9 +1,8 @@
-
-window.addEventListener('DOMContentLoaded', function(){
+window.addEventListener('DOMContentLoaded', function() {
     'use strict';
     
 
-
+    //таймер
     function countTimer(deadline){
         const   timeHours = document.querySelector('#timer-hours'),
                 timeMinutes = document.querySelector('#timer-minutes'),
@@ -25,8 +24,9 @@ window.addEventListener('DOMContentLoaded', function(){
         
         function addZero(str){
             str = String(str);
-            if(str.length < 2)
+            if(str.length < 2){
                 str = '0'+ str;
+            }
             return str;
         }
 
@@ -46,10 +46,98 @@ window.addEventListener('DOMContentLoaded', function(){
             let setInt = setInterval(updateClock, 1000);
             setTimeout(function(){
                 clearInterval(setInt);
-            }, timeRemaining);
+            }, timeRemaining*1000);
         } 
        
     }
-    countTimer('25 july 2019');
-    //setInterval(countTimer, 1000, '29 july 2019');
+    countTimer('26 july 2019');
+
+    //меню
+    const toggleMenu = () => {
+        const   btnMenu = document.querySelector('.menu'),
+                menu = document.querySelector('menu'),
+                closeBtn = document.querySelector('.close-btn'),
+                menuItems = menu.querySelectorAll('ul > li'),
+                body = document.querySelector('body'),
+                handlerMenu = () => {
+                    menu.classList.toggle('active-menu');
+                };
+
+        //btnMenu.addEventListener('click', handlerMenu);
+
+        //closeBtn.addEventListener('click', handlerMenu);
+
+        //menuItems.forEach((elem) => elem.addEventListener('click', handlerMenu)); 
+        body.addEventListener('click', (event) => {
+            let target = event.target;
+            if(menu.classList.contains('active-menu') === false && target.closest('.menu')){
+                menu.classList.toggle('active-menu');
+            } else {
+                if(
+                    (!target.closest('menu') && menu.classList.contains('active-menu') === true) || 
+                    target.closest('.close-btn') ||
+                    target.closest('li')
+                ){
+                    menu.classList.toggle('active-menu');
+                }
+            }
+            
+        });
+    };
+    toggleMenu();
+
+    //popup
+    const togglePopUp = () => {
+        const   popUp = document.querySelector('.popup'),
+                popUpBtn = document.querySelectorAll('.popup-btn');
+        
+
+        popUpBtn.forEach((elem) => elem.addEventListener('click', () => {
+            popUp.style.display = 'block';
+        })); 
+
+        popUp.addEventListener('click', (event) => {
+            let target = event.target;
+            if(target.classList.contains('popup-close')){
+                popUp.style.display = 'none';
+            } else {
+                target = target.closest('.popup-content');
+                if(!target){
+                    popUp.style.display = 'none';
+                }
+            }
+        });
+    };
+    togglePopUp();
+
+    //табы
+    const tabs = () => {
+        const   tabHeader = document.querySelector('.service'),
+                tab = tabHeader.querySelectorAll('.service-header-tab'),
+                tabContent = document.querySelectorAll('.service-tab');
+        const toggleTabContent = (index) => {
+            for(let i = 0; i < tabContent.length; i++){
+                if(index === i) {
+                    tab[i].classList.add('active');
+                    tabContent[i].classList.remove('d-none');
+                } else {
+                    tab[i].classList.remove('active');
+                    tabContent[i].classList.add('d-none');
+                }
+            }
+        };
+
+        tabHeader.addEventListener('click', (event) => {
+            let target = event.target;
+            target = target.closest('.service-header-tab'); // если не найдет, то вернет null
+            if(target) {
+                tab.forEach((item, i) => {
+                    if(item === target){
+                        toggleTabContent(i);
+                    }
+                });
+            }            
+        });
+    };
+    tabs();
 });
