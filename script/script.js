@@ -246,4 +246,7 @@ window.addEventListener('DOMContentLoaded', function(){
         startSlide();
     }   
     slider(); 
+
+    //Наша команда изменение фоток
+    
 });
