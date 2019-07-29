@@ -248,5 +248,42 @@ window.addEventListener('DOMContentLoaded', function(){
     slider(); 
 
     //Наша команда изменение фоток
-    
+    const changeImg = () => {
+        const imgOurCommands = document.getElementById('command');
+        let dataImg;
+        imgOurCommands.addEventListener('mouseover', (event) => {
+            if(event.target.matches('.command__photo')){
+                dataImg = event.target.src;
+                event.target.src = event.target.getAttribute('data-img');
+            }
+        });
+
+        imgOurCommands.addEventListener('mouseout', (event) => {
+            if(event.target.matches('.command__photo')){
+                event.target.src = dataImg;
+            }
+        });
+    };
+    changeImg();
+
+    //Расчитать стоимость
+    const calc = () => {
+        const calc = document.getElementById('calc');
+        const checkNumber = (num) => {
+            let regexp = /[0-9]/i;
+            if(regexp.test(num))
+                return true;
+            else
+                return false;
+        };
+        calc.addEventListener('keydown', () => {
+            if(event.target.matches('input.calc-item')){
+                if(checkNumber(event.key) !== true){
+                    event.preventDefault();
+                    return false;
+                } 
+            }
+        });
+    };
+    calc();
 });
