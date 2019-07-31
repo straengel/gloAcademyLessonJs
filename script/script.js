@@ -297,6 +297,19 @@ window.addEventListener('DOMContentLoaded', function(){
                 totalValue = document.getElementById('total');
 
         const countSum = () => {
+            let showTotal = (ind) => {
+                let int = setInterval(() => {
+                    if(total > ind) {
+                        ind++;
+                    } else if(total < ind) {
+                        ind--;
+                    }
+                    totalValue.textContent = ind;
+                    if(total === ind){
+                        clearInterval(int);
+                    }
+                }, 100);                
+            };
             let total = 0,
                 typeValue = +calcType.options[calcType.selectedIndex].value,
                 squareValue = +calcSquare.value,
@@ -315,9 +328,11 @@ window.addEventListener('DOMContentLoaded', function(){
 
             if(typeValue && squareValue) {
                 total = price * typeValue * squareValue * countValue * dayValue;
-            } 
-
-            totalValue.textContent = total;
+                showTotal(+totalValue.textContent);
+            } else {
+                totalValue.textContent = total;
+            }
+            
         };
         
         calcBlock.addEventListener('change', (event) => {
@@ -329,7 +344,7 @@ window.addEventListener('DOMContentLoaded', function(){
             // }
             // Любой из вариантов верен
             if(target === calcType || target === calcSquare || target === calcDay || target === calcCount){
-                countSum();
+                countSum(totalValue.textContent);
             } 
         });
         
