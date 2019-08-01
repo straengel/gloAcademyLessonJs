@@ -2,6 +2,30 @@
 window.addEventListener('DOMContentLoaded', function(){
     'use strict';
     
+    //Запрет ввода
+    const checkNumber = (num) => {
+        let regexp = /[0-9/B]/i;
+        if(regexp.test(num))
+            return true;
+        else
+            return false;
+    };
+    const checkStringRu = (str) => {
+        let regexp = /[a-яА-Я,\s]/i;
+        regexp = /[А-яё/B]/i;
+        if(regexp.test(str) || str == ' '){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    const checkPhone = (phone) => {
+        let regexp = /[\+0-9/B]/i;
+        if(regexp.test(phone))
+            return true;
+        else
+            return false;
+    }
 
     //таймер
     function countTimer(deadline){
@@ -269,13 +293,6 @@ window.addEventListener('DOMContentLoaded', function(){
     //Расчитать стоимость
     const calcOnlyNumber = () => {
         const calc = document.getElementById('calc');
-        const checkNumber = (num) => {
-            let regexp = /[0-9/B]/i;
-            if(regexp.test(num))
-                return true;
-            else
-                return false;
-        };
         calc.addEventListener('keydown', () => {
             if(event.target.matches('input.calc-item')){
                 if(checkNumber(event.key) !== true){
@@ -350,4 +367,93 @@ window.addEventListener('DOMContentLoaded', function(){
         
     }
     calc(100);
+
+    //send-ajax-form
+    const sendForm = (element) => {
+        const   errorMessage = 'Что-то пошло не так...',
+                loadMessage = 'Загрузка',
+                successMessage = 'Спасибо! Мы скоро с Вами свяжемся!';
+        
+        const form = element;
+
+        const statusMessage = document.createElement('div');
+        
+        const inputs = form.querySelectorAll('input');
+
+        const clearInput = () => {
+            inputs.forEach((value, key) => {
+                value.value = ''
+            })
+        }
+
+        const banChars = () => {
+            form.addEventListener('keydown', (event) => {
+                const target = event.target;
+                if(event.target.matches('input[name=user_name]') || event.target.matches('input[name=user_message]')){
+                    if(checkStringRu(event.key) !== true){
+                        event.preventDefault();
+                        return false;
+                    }  
+                }
+                if(event.target.matches('input[name=user_phone]')){
+                    if(checkPhone(event.key) !== true){
+                        event.preventDefault();
+                        return false;
+                    }  
+                }
+            });
+        }
+        banChars();
+
+        statusMessage.textContent = 'Тут будет сообщение';
+        statusMessage.style.cssText = 'font-size: 2rem';
+        
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            form.appendChild(statusMessage);
+            let body = {};
+
+
+            formData.forEach((val, key) => {
+                body[key] = val;
+            });
+            postData(body, () => {
+                statusMessage.textContent = successMessage;
+                clearInput();
+            }, (error) => {
+                statusMessage.textContent = errorMessage;
+                console.error();
+            });
+        });
+
+        const postData = (body, outputData, errorData) => {
+            const request = new XMLHttpRequest();
+
+            request.addEventListener('readystatechange', () => {
+                statusMessage.textContent = loadMessage;
+    
+                if(request.readyState !== 4){
+                    return;
+                }
+
+                if(request.status === 200){
+                    outputData();
+                } else {
+                    errorData(request.status);
+                }
+            });
+
+            request.open('POST', './server.php');
+            //request.setRequestHeader('Content-type', 'multipart/form-data');
+            request.setRequestHeader('Content-type', 'application/json');
+            
+            //request.send(formData);
+            request.send(JSON.stringify(body));
+        }
+    };
+    
+    sendForm(document.getElementById('form1'));
+    sendForm(document.getElementById('form2'));
+    sendForm(document.getElementById('form3'));
 });
