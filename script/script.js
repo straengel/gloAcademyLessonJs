@@ -408,6 +408,8 @@ window.addEventListener('DOMContentLoaded', function(){
         statusMessage.textContent = 'Тут будет сообщение';
         statusMessage.style.cssText = 'font-size: 2rem';
         
+        
+
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             const formData = new FormData(form);
@@ -418,48 +420,37 @@ window.addEventListener('DOMContentLoaded', function(){
             formData.forEach((val, key) => {
                 body[key] = val;
             });
-            /*
-            postData(body, () => {
-                statusMessage.textContent = successMessage;
-                clearInput();
-            }, (error) => {
-                statusMessage.textContent = errorMessage;
-                console.error();
-            });
-            /**/
             postData(body)
                 .then(()=>{
                     statusMessage.textContent = successMessage;
                     clearInput();
-                })
-                .catch((error) => {
+                }, (error) => {
                     statusMessage.textContent = errorMessage;
                     console.error();
+                })
+                .catch(() => {
+                    console.log('Just DO IT!');
                 });
         });
 
-        const postData = (body, outputData, errorData) => {
-            return Promise((resolve, reject) => {
+        const postData = (body) => {
+            return new Promise((resolve, reject) => {
                 const request = new XMLHttpRequest();
-
+                statusMessage.textContent = loadMessage;
+                request.open('POST', './server.php');
+                request.setRequestHeader('Content-type', 'application/json');
+                request.send(JSON.stringify(body));
                 request.addEventListener('readystatechange', () => {
-                    statusMessage.textContent = loadMessage;
-        
+                    
                     if(request.readyState !== 4){
                         return;
                     }
-    
+
                     if(request.status === 200){
                         resolve();
                     } else {
                         reject(request.status);
                     }
-                    request.open('POST', './server.php');
-                    //request.setRequestHeader('Content-type', 'multipart/form-data');
-                    request.setRequestHeader('Content-type', 'application/json');
-                    
-                    //request.send(formData);
-                    request.send(JSON.stringify(body));
                 });
             });
         }
@@ -469,3 +460,24 @@ window.addEventListener('DOMContentLoaded', function(){
     sendForm(document.getElementById('form2'));
     sendForm(document.getElementById('form3'));
 });
+// const request = new XMLHttpRequest();
+
+// request.addEventListener('readystatechange', () => {
+//     statusMessage.textContent = loadMessage;
+
+//     if(request.readyState !== 4){
+//         return;
+//     }
+
+//     if(request.status === 200){
+//         resolve();
+//     } else {
+//         reject(request.status);
+//     }
+//     request.open('POST', './server.php');
+//     //request.setRequestHeader('Content-type', 'multipart/form-data');
+//     request.setRequestHeader('Content-type', 'application/json');
+    
+//     //request.send(formData);
+//     request.send(JSON.stringify(body));
+// });
