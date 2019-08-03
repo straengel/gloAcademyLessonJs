@@ -418,6 +418,7 @@ window.addEventListener('DOMContentLoaded', function(){
             formData.forEach((val, key) => {
                 body[key] = val;
             });
+            /*
             postData(body, () => {
                 statusMessage.textContent = successMessage;
                 clearInput();
@@ -425,31 +426,42 @@ window.addEventListener('DOMContentLoaded', function(){
                 statusMessage.textContent = errorMessage;
                 console.error();
             });
+            /**/
+            postData(body)
+                .then(()=>{
+                    statusMessage.textContent = successMessage;
+                    clearInput();
+                })
+                .catch((error) => {
+                    statusMessage.textContent = errorMessage;
+                    console.error();
+                });
         });
 
         const postData = (body, outputData, errorData) => {
-            const request = new XMLHttpRequest();
+            return Promise((resolve, reject) => {
+                const request = new XMLHttpRequest();
 
-            request.addEventListener('readystatechange', () => {
-                statusMessage.textContent = loadMessage;
+                request.addEventListener('readystatechange', () => {
+                    statusMessage.textContent = loadMessage;
+        
+                    if(request.readyState !== 4){
+                        return;
+                    }
     
-                if(request.readyState !== 4){
-                    return;
-                }
-
-                if(request.status === 200){
-                    outputData();
-                } else {
-                    errorData(request.status);
-                }
+                    if(request.status === 200){
+                        resolve();
+                    } else {
+                        reject(request.status);
+                    }
+                    request.open('POST', './server.php');
+                    //request.setRequestHeader('Content-type', 'multipart/form-data');
+                    request.setRequestHeader('Content-type', 'application/json');
+                    
+                    //request.send(formData);
+                    request.send(JSON.stringify(body));
+                });
             });
-
-            request.open('POST', './server.php');
-            //request.setRequestHeader('Content-type', 'multipart/form-data');
-            request.setRequestHeader('Content-type', 'application/json');
-            
-            //request.send(formData);
-            request.send(JSON.stringify(body));
         }
     };
     
