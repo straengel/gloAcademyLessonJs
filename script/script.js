@@ -14,13 +14,15 @@ window.addEventListener('DOMContentLoaded', function(){
 
         function getTimeRemaining(){
             let dateStop = new Date(deadline).getTime(),
-            dateNow = new Date().getTime(),
+            //dateNow = new Date().getTimezoneOffset().getTime(),
+            dateNow = new Date().getTime() + new Date().getTimezoneOffset(0) * 60 * 1000,
             timeRemaining = (dateStop - dateNow) / 1000,
             day = Math.floor(timeRemaining / 360 / 24),
-            hours = Math.floor((timeRemaining / 360) % 24),
+            hours = Math.floor((timeRemaining / 60) / 60),
             minutes = Math.floor((timeRemaining / 60) % 60),
             seconds = Math.floor(timeRemaining % 60),
-            plusDay = 86400000;
+            plusDay = 86400000,
+            grinvich = new Date().getTimezoneOffset();
             console.log(dateStop, dateNow);
             if(dateNow >= dateStop){
                 countTimer(dateNow+plusDay);
