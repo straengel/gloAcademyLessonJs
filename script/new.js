@@ -37,4 +37,3 @@ startStop.addEventListener('click', (event) => {
 });
 
 
-

@@ -11,18 +11,15 @@ window.addEventListener('DOMContentLoaded', function(){
         timeHours.textContent = '00';
         timeMinutes.textContent = '00';
         timeSeconds.textContent = '00';
-        let dateNow = new Date().getTime() + new Date().getTimezoneOffset(0) * 60 * 1000;
 
         function getTimeRemaining(){
-            let dateStop = new Date(deadline).getTime(),
-            timeRemaining = (dateStop - dateNow) / 1000,
-            day = Math.floor(timeRemaining / 360 / 24),
+            let dateNow = new Date().getTime() + new Date().getTimezoneOffset(0) * 60 * 1000;
+            let timeRemaining = (deadline - dateNow) / 1000,
             hours = Math.floor((timeRemaining / 60) / 60),
             minutes = Math.floor((timeRemaining / 60) % 60),
             seconds = Math.floor(timeRemaining % 60),
-            plusDay = 86400000,
-            grinvich = new Date().getTimezoneOffset();
-            if(dateNow >= dateStop){
+            plusDay = 86400000;
+            if(dateNow >= deadline){
                 countTimer(dateNow+plusDay);
             }
             return { hours, minutes, seconds, timeRemaining };
@@ -55,6 +52,6 @@ window.addEventListener('DOMContentLoaded', function(){
         } 
        
     }
-    countTimer('25 july 2019');
+    countTimer(new Date('25 july 2019').getTime());
     //setInterval(countTimer, 1000, '29 july 2019');
 });
