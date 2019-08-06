@@ -5,12 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+    #block {
+        position: relative;
+        width: 100%;
+        height: 300px;
+        margin: 20px 0 0
+    }
+    #element {
+        position: absolute;
+        background: red;
+        height: 50px;
+        width: 50px;
+    }
+    </style>
 </head>
 <body>
-    <div id="hello"></div>
-    <div id="nowDay"></div>
-    <div id="nowTime"></div>
-    <div id="newYaer"></div>
+<button id="start">start/stop</button>
+<div id="block">
+    <div id="element"></div>
+</div>
     <script src="./script/new.js"></script>
 </body>
 </html>

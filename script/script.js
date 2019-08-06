@@ -19,8 +19,12 @@ window.addEventListener('DOMContentLoaded', function(){
             day = Math.floor(timeRemaining / 360 / 24),
             hours = Math.floor((timeRemaining / 360) % 24),
             minutes = Math.floor((timeRemaining / 60) % 60),
-            seconds = Math.floor(timeRemaining % 60);
-
+            seconds = Math.floor(timeRemaining % 60),
+            plusDay = 86400000;
+            console.log(dateStop, dateNow);
+            if(dateNow >= dateStop){
+                countTimer(dateNow+plusDay);
+            }
             return { hours, minutes, seconds, timeRemaining };
         }
         
