@@ -406,12 +406,26 @@ window.addEventListener('DOMContentLoaded', function(){
         banChars();
 
         statusMessage.textContent = 'Тут будет сообщение';
-        statusMessage.style.cssText = 'font-size: 2rem';
+        statusMessage.style.cssText = 'font-size: 2rem; opacity:0';
+        statusMessage.classList.add('messageForm');
+        
+        const showMessage = (elem) => {
+            let step = 0.1;
+            let setInt = setInterval(() => {
+                step += 0.1;
+                if(step === 1){
+                    clearInterval(setInt);
+                }
+                elem.style.opacity = step;
+            }, 100);
+        }
+        //showMessage(element.querySelector('.messageForm'));
         
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             const formData = new FormData(form);
             form.appendChild(statusMessage);
+            showMessage(element.querySelector('.messageForm'));
             let body = {};
 
 
