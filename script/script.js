@@ -408,15 +408,27 @@ window.addEventListener('DOMContentLoaded', function(){
         statusMessage.textContent = 'Тут будет сообщение';
         statusMessage.style.cssText = 'font-size: 2rem; opacity:0';
         statusMessage.classList.add('messageForm');
-        
-        const showMessage = (elem) => {
-            let step = 0.1;
-            let setInt = setInterval(() => {
-                step += 0.1;
-                if(step === 1){
-                    clearInterval(setInt);
+        let setInt;
+        let step = 0.1;
+        const showMessage = (elem, changeInt = true) => {
+            
+            
+            setInt = setInterval(()=>{
+                if(changeInt === true){
+                    step += 0.1;
+                    if(step >= 1){
+                        clearInterval(setInt);
+                        showMessage(element.querySelector('.messageForm'), false);
+                    }
+                } else {
+                    step -= 0.1;
+                    if(step <= 0){
+                        clearInterval(setInt);
+                        showMessage(element.querySelector('.messageForm'), true);
+                    }
                 }
                 elem.style.opacity = step;
+                
             }, 100);
         }
         //showMessage(element.querySelector('.messageForm'));
@@ -433,7 +445,10 @@ window.addEventListener('DOMContentLoaded', function(){
                 body[key] = val;
             });
             postData(body, () => {
+                
                 statusMessage.textContent = successMessage;
+                clearInterval(setInt);
+                element.querySelector('.messageForm').style.opacity = 1;
                 clearInput();
             }, (error) => {
                 statusMessage.textContent = errorMessage;
