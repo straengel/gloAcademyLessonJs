@@ -371,7 +371,7 @@ window.addEventListener('DOMContentLoaded', function(){
     //send-ajax-form
     const sendForm = (element) => {
         const   errorMessage = 'Что-то пошло не так...',
-                loadMessage = 'Загрузка',
+                loadMessage = `<img src="./images/icons/loading.gif" style="display: block; max-width: 50px; margin: 10px auto">`,
                 successMessage = 'Спасибо! Мы скоро с Вами свяжемся!';
         
         const form = element;
@@ -406,7 +406,7 @@ window.addEventListener('DOMContentLoaded', function(){
         banChars();
 
         statusMessage.textContent = 'Тут будет сообщение';
-        statusMessage.style.cssText = 'font-size: 2rem; opacity:0';
+        statusMessage.style.cssText = 'font-size: 2rem;';
         statusMessage.classList.add('messageForm');
         let setInt;
         let step = 0.1;
@@ -437,7 +437,9 @@ window.addEventListener('DOMContentLoaded', function(){
             event.preventDefault();
             const formData = new FormData(form);
             form.appendChild(statusMessage);
-            showMessage(element.querySelector('.messageForm'));
+            //showMessage(element.querySelector('.messageForm'));
+            //element.querySelector('.messageForm').inn
+            
             let body = {};
 
 
@@ -446,9 +448,9 @@ window.addEventListener('DOMContentLoaded', function(){
             });
             postData(body, () => {
                 
-                statusMessage.textContent = successMessage;
-                clearInterval(setInt);
-                element.querySelector('.messageForm').style.opacity = 1;
+                statusMessage.innerHTML = successMessage;
+                // clearInterval(setInt);
+                // element.querySelector('.messageForm').style.opacity = 1;
                 clearInput();
             }, (error) => {
                 statusMessage.textContent = errorMessage;
@@ -460,8 +462,8 @@ window.addEventListener('DOMContentLoaded', function(){
             const request = new XMLHttpRequest();
 
             request.addEventListener('readystatechange', () => {
-                statusMessage.textContent = loadMessage;
-    
+                //statusMessage.textContent = loadMessage;
+                statusMessage.innerHTML = loadMessage;
                 if(request.readyState !== 4){
                     return;
                 }
